@@ -1,0 +1,15 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia | Search Results
+{% endblock %}
+
+{% block body %}
+    {% for result in options %}
+    <ul>
+        <li> <a href="{% url 'entry' result %}">{{result}}</a></li>
+    </ul>
+        {% empty %}
+        <p>Your search returned 0 results</p>
+    {% endfor %}
+{% endblock %}

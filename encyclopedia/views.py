@@ -1,10 +1,12 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from markdown2 import Markdown
 from django.http import Http404
 
 from . import util
 
-
+# Index page
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
@@ -26,5 +28,22 @@ def entry(request, title):
           "title": title
     }
     return render(request, "encyclopedia/entry.html", context)
+
+# Search
+def search(request):
+    if request.method == "POST":
+        query = request.POST['q'].lower()
+        entries = util.list_entries()
+        lowercase = []
+        for x in entries:
+            lowercase.append(x.lower())
+        if query in lowercase:
+            return HttpResponseRedirect(reverse('entry', args=(query,)))
+        else:
+            options = []
+            for entry in lowercase:
+                if query in entry:
+                    options.append(entry)
+            return render(request, "encyclopedia/searchresults.html", {'options': options })
 
 
