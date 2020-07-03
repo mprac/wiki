@@ -25,7 +25,8 @@ def entry(request, title):
         return render(request, "encyclopedia/error.html", {'error': 'The requested page was not found'})
     context = {
           "entry": tohtml,
-          "title": title
+          "title": title,
+          "content": getentry
     }
     return render(request, "encyclopedia/entry.html", context)
 
@@ -45,5 +46,43 @@ def search(request):
                 if query in entry:
                     options.append(entry)
             return render(request, "encyclopedia/searchresults.html", {'options': options })
+
+# new page
+def newpage(request):
+    return render(request, 'encyclopedia/newpage.html')
+
+# create new page
+def createpage(request):
+    if request.method == "POST":
+        title = request.POST['title'].lower()
+        content = request.POST['content']
+        entries = util.list_entries()
+        lowercase = []
+        for x in entries:
+            lowercase.append(x.lower())
+        if title in lowercase:
+            return render(request, 'encyclopedia/newpage.html', {'error': 'Page already exists'})
+        else:
+            title = request.POST['title']
+            util.save_entry(title, content)
+            return HttpResponseRedirect(reverse('entry', args=(title,)))
+
+# edit page
+def edit(request, title):
+    content = util.get_entry(title)
+    context = {
+        'title': title,
+        'content': content
+    }
+    return render(request, 'encyclopedia/edit.html', context)
+
+def saveedit(request):
+    if request.method == "POST":
+        title = request.POST["title"]
+        content = request.POST["content"]
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse('entry', args=(title,)))     
+
+            
 
 
