@@ -54,7 +54,7 @@ def newpage(request):
 # create new page
 def createpage(request):
     if request.method == "POST":
-        title = request.POST['title'].lower()
+        title = request.POST['title'].lower().strip(' .,/')
         content = request.POST['content']
         entries = util.list_entries()
         lowercase = []
@@ -63,7 +63,7 @@ def createpage(request):
         if title in lowercase:
             return render(request, 'encyclopedia/newpage.html', {'error': 'Page already exists'})
         else:
-            title = request.POST['title']
+            title = request.POST['title'].strip(' .,/')
             util.save_entry(title, content)
             return HttpResponseRedirect(reverse('entry', args=(title,)))
 
