@@ -39,11 +39,14 @@ def search(request):
         for x in entries:
             lowercase.append(x.lower())
         if query in lowercase:
-            return HttpResponseRedirect(reverse('entry', args=(query,)))
+            title = request.POST['q']
+            for entry in entries:
+                if title == entry.lower():
+                    return HttpResponseRedirect(reverse('entry', args=(entry,)))
         else:
             options = []
-            for entry in lowercase:
-                if query in entry:
+            for entry in entries:
+                if query in entry.lower():
                     options.append(entry)
             return render(request, "encyclopedia/searchresults.html", {'options': options })
 
