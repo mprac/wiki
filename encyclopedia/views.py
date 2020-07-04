@@ -1,8 +1,12 @@
+import random
+
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from markdown2 import Markdown
 from django.http import Http404
+
+
 
 from . import util
 
@@ -79,13 +83,19 @@ def edit(request, title):
     }
     return render(request, 'encyclopedia/edit.html', context)
 
+# save post
 def saveedit(request):
     if request.method == "POST":
         title = request.POST["title"]
         content = request.POST["content"]
         util.save_entry(title, content)
-        return HttpResponseRedirect(reverse('entry', args=(title,)))     
+        return HttpResponseRedirect(reverse('entry', args=(title,)))
 
-            
+# random page
+def randompage(request):
+    entries = util.list_entries()
+    r = random.choice(entries)
+    return HttpResponseRedirect(reverse('entry', args=(r,)))
+    
 
 
