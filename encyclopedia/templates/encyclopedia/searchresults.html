@@ -5,11 +5,13 @@
 {% endblock %}
 
 {% block body %}
-    {% for result in options %}
+    <h1>Search Results</h1>
     <ul>
+    {% for result in options %}
+    
         <li> <a href="{% url 'entry' result %}">{{result}}</a></li>
-    </ul>
         {% empty %}
         <p>Your search returned 0 results</p>
     {% endfor %}
+    </ul>
 {% endblock %}

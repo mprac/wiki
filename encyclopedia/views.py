@@ -12,9 +12,17 @@ from . import util
 
 # Index page
 def index(request):
-    return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
-    })
+    entries = util.list_entries()
+    entrylist = []
+    linklist = []
+    for entry in entries:
+        entrylist.append(entry)
+        linklist.append(entry)
+    context = {
+        "entries": entrylist,
+        "links": linklist
+    }
+    return render(request, "encyclopedia/index.html", context)
 
 # Entry Page 
 def entry(request, title):
@@ -45,7 +53,7 @@ def search(request):
         if query in lowercase:
             title = request.POST['q']
             for entry in entries:
-                if title == entry.lower():
+                if query == entry.lower():
                     return HttpResponseRedirect(reverse('entry', args=(entry,)))
         else:
             options = []
@@ -61,7 +69,7 @@ def newpage(request):
 # create new page
 def createpage(request):
     if request.method == "POST":
-        title = request.POST['title'].lower().strip(' .,/')
+        title = request.POST['title'].lower()
         content = request.POST['content']
         entries = util.list_entries()
         lowercase = []
